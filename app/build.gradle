@@ -4,20 +4,36 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+ext.versionMajor = 1
+ext.versionMinor = 0
+ext.versionPatch = 3
+ext.versionClassifier = null
+ext.isSnapShot = false
+ext.minSdkVersion = 21
+
 android {
+    signingConfigs {
+        release {
+            keyAlias 'key0'
+            keyPassword 'Password4'
+            storeFile file('../Untitled')
+            storePassword 'Password4'
+        }
+    }
     compileSdkVersion 29
     defaultConfig {
         applicationId "dev.idee.cicdandroid"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionName generateVersionName()
+        versionCode generateVersionCode()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', "API_KEY", API_KEY
 
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,5 +69,25 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
 
 
+}
 
+private Integer generateVersionCode() {
+    return ext.minSdkVersion * 10000000 + ext.versionMajor * 10000 +
+            ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+
+    if (ext.versionClassifier == null) {
+        if (ext.isSnapShot) {
+            ext.versionClassifier = "SNAPSHOT"
+        }
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifer
+    }
+
+    return versionName
 }

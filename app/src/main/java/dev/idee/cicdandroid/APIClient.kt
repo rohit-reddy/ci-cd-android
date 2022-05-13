@@ -11,6 +11,8 @@ object APIClient {
 
     private const val BASE_URL = "https://api.themoviedb.org/"
     private lateinit var retrofit: Retrofit
+    private const val BASE_URL = "https://api.themoviedb.org/"
+
 
     val client: Retrofit
         get() {
